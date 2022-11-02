@@ -1,5 +1,5 @@
 # B7팀(오코완)_노래 추천 프로젝트 
-- Frontend : https://github.com/saJaeHyukc/Music_Recommend_Front
+- Frontend : https://github.com/1TEAM12/Music_Recommend_Front
 ## ****📌 프로젝트 핵심 목적****
 
 - Django restframework와 머신러닝 추천 시스템을 활용하여 사용자의 취향에 따라 노래를 추천해주고, 편리하게 플레이리스트를 생성하여 사용/관리할 수 있는 플랫폼 제공
