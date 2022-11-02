@@ -22,7 +22,7 @@ class UserView(APIView):
     #회원정보 수정
     def put(self, request):
         user = get_object_or_404(User, id=request.user.id)
-        if user == request.user.id:
+        if user == request.user:
             serializer = UserSerializer(user, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
