@@ -1,0 +1,74 @@
+[
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "국내드라마"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "국내영화"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "댄스"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "랩/힙합"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "록/메탈"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "발라드"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "성인가요/트로트"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "일렉트로니카"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "재즈"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "포크/블루스"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "R&B/Soul"
+    }
+  },
+  {
+    "model": "songs.genre",
+    "fields": {
+      "name": "인디음악"
+    }
+  }
+]
