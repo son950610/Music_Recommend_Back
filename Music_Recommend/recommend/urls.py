@@ -1,5 +1,6 @@
 from django.urls import path
-from recommend import views
+
+from . import views
 
 urlpatterns = [
     path('songs/', views.SongListView.as_view(), name="song-list"),    

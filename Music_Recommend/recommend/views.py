@@ -2,14 +2,12 @@ from django.shortcuts import get_list_or_404
 from rest_framework import status 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from recommend.recommend_function import get_recommendations
+
 import random
 
 from songs.models import Song
-from recommend.serializers import (
-    SongListSerializer,
-    )
-
+from recommend.serializers import SongListSerializer
+from recommend.recommend_function import get_recommendations    
 
 class SongListView(APIView):
     def get(self, request, format=None):

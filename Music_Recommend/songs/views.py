@@ -3,30 +3,36 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
 from .models import Song, Voice, Comment
-from songs.serializers import SongSerializer, VoiceCreateSerializer, VoiceSerializer, VoiceDetailSerializer, CommentSerializer, CommentCreateSerializer
-
-# Create your views here.
-
+from songs.serializers import SongSerializer, VoiceCreateSerializer, VoiceSerializer, CommentSerializer, CommentCreateSerializer
 
 class SongView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    #음악 상세페이지
     def get(self, request, song_id):
         song = get_object_or_404(Song, id=song_id)
         serializer = SongSerializer(song)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#노래 좋아요
 class SongLikeView(APIView):
     permission_classes = [IsAuthenticated] 
+    
     def post(self, request, song_id):
         song = get_object_or_404(Song, id=song_id)
         if request.user in song.song_likes.all():
             song.song_likes.remove(request.user)
-            return Response("좋아요 취소했습니다.", status=status.HTTP_204_NO_CONTENT)
+            return Response("좋아요 취소.", status=status.HTTP_204_NO_CONTENT)
         else:
             song.song_likes.add(request.user)
-            return Response("좋아요 했습니다.", status=status.HTTP_200_OK)
+            return Response("좋아요 함.", status=status.HTTP_200_OK)
 
+#노래 검색
 class SearchView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request):
         post_result = Song.object.all()
     pass
@@ -34,12 +40,14 @@ class SearchView(APIView):
 class VoiceView(APIView):
     permission_classes = [IsAuthenticated]
 
+    #모창 전체 리스트
     def get(self, request, song_id):
         song = get_object_or_404(Song, id=song_id)
         voice = song.voice_set.all()
         serializer = VoiceSerializer(voice, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    #모창 생성
     def post(self, request, song_id):
         serializer = VoiceCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -50,11 +58,7 @@ class VoiceView(APIView):
 class VoiceDetailView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def get(self, request, song_id, voice_id):
-        voice = get_object_or_404(Voice, id=voice_id)
-        serializer = VoiceDetailSerializer(voice)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+    #모창 수정
     def put(self, request, song_id, voice_id):
         voice = get_object_or_404(Voice, id=voice_id)
         if request.user == voice.user:
@@ -63,15 +67,16 @@ class VoiceDetailView(APIView):
                 serializer.save(user=request.user, song_id=song_id)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+        return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
     
+    #모창 삭제
     def delete(self, request, song_id, voice_id):
         voice = get_object_or_404(Voice, id=voice_id)
         if request.user == voice.user:
             voice.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
-        
+        return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
+#모창 좋아요
 class VoiceLikeView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -79,30 +84,34 @@ class VoiceLikeView(APIView):
         voice = get_object_or_404(Voice, id=voice_id)
         if request.user in voice.voice_likes.all():
             voice.voice_likes.remove(request.user)
-            return Response("좋아요 취소했습니다.", status=status.HTTP_200_OK)
+            return Response("좋아요 취소", status=status.HTTP_200_OK)
         else:
             voice.voice_likes.add(request.user)
-            return Response("좋아요 했습니다.", status=status.HTTP_200_OK)
+            return Response("좋아요 함", status=status.HTTP_200_OK)
 
 class CommentView(APIView):
+    permission_classes = [IsAuthenticated] 
     
+    #댓글 전체 리스트
     def get(self, request, song_id):
         song = Song.objects.get(id=song_id)
         comments = song.comment_set.all()
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    #댓글 생성
     def post(self, request, song_id):
         serializer = CommentCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, article_id=song_id)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CommentDetailView(APIView):
-
+    permission_classes = [IsAuthenticated] 
+    
+    #댓글 수정
     def put(self, request, song_id, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
         if request.user == comment.user:
@@ -110,16 +119,14 @@ class CommentDetailView(APIView):
             if serializer.is_vaild():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
 
-    def delete(self, request, comment_id):
+    #댓글 삭제
+    def delete(self, request, song_id, comment_id):
         comment= get_object_or_404(Comment, id=comment_id)
         if request.user == comment.user:
             comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+        return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
 

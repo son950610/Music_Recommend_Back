@@ -1,7 +1,6 @@
 from django.db import models
-from users.models import User
 
-# Create your models here.
+from users.models import User
 
 class Song(models.Model):
     year = models.CharField(max_length=70, blank=True)
@@ -14,6 +13,7 @@ class Song(models.Model):
     likes = models.IntegerField(blank=True)
     image = models.TextField(blank=True)
     genre_no = models.IntegerField(blank=True)
+    
     song_likes = models.ManyToManyField(User, related_name="like_song",blank=True)
     
     class Meta: 
@@ -28,7 +28,9 @@ class Voice(models.Model):
     recode = models.FileField(upload_to="voice_record")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
     voice_likes = models.ManyToManyField(User, related_name="like_voice", blank=True)
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
     class Meta:
@@ -36,11 +38,16 @@ class Voice(models.Model):
         ordering = ['-created_at']
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name="comments")
-    content= models.TextField()
+    content= models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
     
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name="comments")
+    
     def __str__(self):
         return str(self.content)
+    
+    class Meta:
+        db_table = 'user'
+        ordering = ['-created_at']
