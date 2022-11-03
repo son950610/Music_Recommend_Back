@@ -15,8 +15,7 @@ class SongView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SongLikeView(APIView):
-    permission_classes = [IsAuthenticated]
-    
+    permission_classes = [IsAuthenticated] 
     def post(self, request, song_id):
         song = get_object_or_404(Song, id=song_id)
         if request.user in song.song_likes.all():
