@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 # Create your models here.
 
@@ -21,5 +22,6 @@ class Song(models.Model):
     likes = models.IntegerField(blank=True)
     image = models.TextField(blank=True)
     genre_no = models.IntegerField(blank=True)
+    song_likes = models.ManyToManyField(User, related_name="like_song")
 
 

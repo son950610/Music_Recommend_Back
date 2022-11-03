@@ -12,7 +12,17 @@ class SongView(APIView):
         song = get_object_or_404(Song, id=song_id)
         serializer = SongSerializer(song)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
+class SongLikeView(APIView):
+    def post(self, request, song_id):
+        song = get_object_or_404(Song, id=song_id)
+        if request.user in song.song_likes.all():
+            song.song_likes.remove(request.user)
+            return Response("좋아요취소했습니다.", status=status.HTTP_204_NO_CONTENT)
+        else:
+            song.song_likes.add(request.user)
+            return Response("좋아요했습니다.", status=status.HTTP_200_OK)
+
 class SearchView(APIView):
     def get(self, request):
         post_result = Song.object.all()
