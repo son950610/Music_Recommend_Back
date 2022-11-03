@@ -3,7 +3,6 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 
-
 class UserManager(BaseUserManager):
     def create_user(self, email, nickname, password=None):
 
@@ -63,3 +62,4 @@ class User(AbstractBaseUser):
     def is_staff(self):
         # Simplest possible answer: All admins are staff
         return self.is_admin
+    
