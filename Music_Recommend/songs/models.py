@@ -25,12 +25,14 @@ class Song(models.Model):
 
 
 class Voice(models.Model):
-    recode = models.File
+    # recode = models.File
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     voice_likes = models.ManyToManyField(User, related_name="like_voice")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
     class Meta:
-        db_tabla = 'voice'
+        db_table = 'voice'
         ordering = ['-created_at']
+
 
