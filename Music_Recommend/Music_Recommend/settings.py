@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'songs',
     'playlists',
-    
+    'recommend',
 
 ]
 

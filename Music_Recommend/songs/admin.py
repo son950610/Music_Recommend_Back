@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Song, Voice
+from .models import Song, Voice, Comment
 # Register your models here.
 
 admin.site.register(Song)
 admin.site.register(Voice)
+admin.site.register(Comment)
