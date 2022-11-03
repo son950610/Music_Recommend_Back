@@ -1,15 +1,11 @@
 import json
 
-
 with open('song.json', 'r',encoding='UTF-8') as f:
     songs = json.load(f)
-
 
 new_list = []
 for song in songs:
     new_data = {'model': 'songs.song'}
-    
-
     new_data["fields"] = song
     new_list.append(new_data)
 
