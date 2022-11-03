@@ -6,6 +6,7 @@ from users.models import User
 class Song(models.Model):
     class Meta: 
         db_table = 'song'
+        ordering = ['id']
         
     year = models.CharField(max_length=70, blank=True)
     rank = models.CharField(max_length=70, blank=True)
@@ -18,5 +19,9 @@ class Song(models.Model):
     image = models.TextField(blank=True)
     genre_no = models.IntegerField(blank=True)
     song_likes = models.ManyToManyField(User, related_name="like_song")
+   
+
+    def __str__(self):
+        return str(self.title) 
 
 
