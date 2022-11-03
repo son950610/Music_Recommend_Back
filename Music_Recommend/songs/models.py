@@ -14,7 +14,7 @@ class Song(models.Model):
     likes = models.IntegerField(blank=True)
     image = models.TextField(blank=True)
     genre_no = models.IntegerField(blank=True)
-    song_likes = models.ManyToManyField(User, related_name="like_song")
+    song_likes = models.ManyToManyField(User, related_name="like_song",blank=True)
     
     class Meta: 
         db_table = 'song'
@@ -25,10 +25,10 @@ class Song(models.Model):
 
 
 class Voice(models.Model):
-    # recode = models.File
+    recode = models.FileField(upload_to="voice_record")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    voice_likes = models.ManyToManyField(User, related_name="like_voice")
+    voice_likes = models.ManyToManyField(User, related_name="like_voice", blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
     class Meta:
