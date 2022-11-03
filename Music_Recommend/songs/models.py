@@ -25,7 +25,7 @@ class Song(models.Model):
 
 
 class Voice(models.Model):
-    # recode = models.File
+    recode = models.FieldFile(upload_to="voice_record")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     voice_likes = models.ManyToManyField(User, related_name="like_voice")
