@@ -49,7 +49,6 @@ class ChangePasswordView(APIView):
         else:
             return Response({"message":"맞는 비밀번호를 적어주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
-            
     #비밀번호 변경
     def put(self, request):
         user = get_object_or_404(User, id=request.user.id)

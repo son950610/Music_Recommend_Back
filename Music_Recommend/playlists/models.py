@@ -11,4 +11,9 @@ class Playlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     playlist_detail = models.ManyToManyField(Song, related_name='playlist_detail')
     
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ['-created_at']    
     
