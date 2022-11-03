@@ -22,14 +22,6 @@ class PlaylistDetailSerializer(serializers.ModelSerializer):
     
     def get_user(self, obj):
         return obj.user.email
-    
-    # def get_playlist_detail(self, obj):
-    #     context = {}
-    #     context["title"] = obj.playlist_detail.song.title
-    #     context["singer"] = obj.playlist_detail.song.singer
-    #     context["genre"] = obj.playlist_detail.song.genre
-    #     return context
-    
     class Meta:
         model = Playlist
         fields = ('id', 'title', 'content', 'created_at', 'updated_at', 'playlist_detail','user',)
