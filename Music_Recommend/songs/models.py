@@ -4,25 +4,22 @@ from django.db import models
 
 
 
-class Genre(models.Model):
-    class Meta:
-        db_table = 'genre'
-    name = models.CharField(max_length=70, default='')
-
 
 
 
 class Song(models.Model):
-    class Meta:
+    class Meta: 
         db_table = 'song'
-    year = models.CharField(max_length=70, default='')
-    rank = models.CharField(max_length=70, default='')
-    title = models.CharField(max_length=70, default='')
-    genre = models.ManyToManyField(Genre, related_name='songs')
-    singer = models.CharField(max_length=70, default='')
-    type = models.CharField(max_length=70, default='')
-    lyrics = models.TextField(max_length=500, default='')
-    likes = models.CharField(max_length=70, default='')
-    image = models.TextField(max_length=256, default='')
+        
+    year = models.CharField(max_length=70, blank=True)
+    rank = models.CharField(max_length=70, blank=True)
+    title = models.CharField(max_length=70, blank=True)
+    genre = models.CharField(max_length=70, blank=True)
+    singer = models.CharField(max_length=70, blank=True)
+    type = models.CharField(max_length=70, blank=True)
+    lyrics = models.TextField(blank=True)
+    likes = models.IntegerField(blank=True)
+    image = models.TextField(blank=True)
+    genre_no = models.IntegerField(blank=True)
 
 
