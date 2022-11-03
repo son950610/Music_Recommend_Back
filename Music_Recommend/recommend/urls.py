@@ -3,5 +3,5 @@ from recommend import views
 
 urlpatterns = [
     path('songs/', views.SongListView.as_view(), name="song-list"),    
-    path('songs/recommend/<int:song_id>/', views.SongRecommendView.as_view(), name="song-recommend"),   
+    path('songs/<int:song_id>/recommend/', views.SongRecommendView.as_view(), name="song-recommend"),   
 ]
