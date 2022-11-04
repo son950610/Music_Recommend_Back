@@ -4,9 +4,14 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from .pagination import PaginationHandlerMixin
 from .models import Song, Voice, Comment
 from songs.serializers import SongSerializer, VoiceCreateSerializer, VoiceSerializer, CommentSerializer, CommentCreateSerializer
 
+from rest_framework.pagination import PageNumberPagination
+
+class CommetVoicePagination(PageNumberPagination):
+    page_size = 10
 class SongView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -30,21 +35,24 @@ class SongLikeView(APIView):
             return Response("좋아요 함.", status=status.HTTP_200_OK)
 
 #노래 검색
-class SearchView(APIView):
+class SearchView(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
         post_result = Song.object.all()
     pass
 
-class VoiceView(APIView):
+class VoiceView(PaginationHandlerMixin, APIView):
+    pagination_class = CommetVoicePagination
     permission_classes = [IsAuthenticated]
 
     #모창 전체 리스트
     def get(self, request, song_id):
+        id = request.GET.get('id', None)
         song = get_object_or_404(Song, id=song_id)
         voice = song.voices.all()
-        serializer = VoiceSerializer(voice, many=True)
+        page = self.paginate_queryset(voice)
+        serializer = self.get_paginated_response(VoiceSerializer(page,many=True).data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     #모창 생성
@@ -89,14 +97,17 @@ class VoiceLikeView(APIView):
             voice.voice_likes.add(request.user)
             return Response("좋아요 함", status=status.HTTP_200_OK)
 
-class CommentView(APIView):
+class CommentView(PaginationHandlerMixin, APIView):
+    pagination_class = CommetVoicePagination
     permission_classes = [IsAuthenticated] 
     
     #댓글 전체 리스트
     def get(self, request, song_id):
+        id = request.GET.get('id', None)
         song = Song.objects.get(id=song_id)
         comments = song.comments.all()
-        serializer = CommentSerializer(comments, many=True)
+        page = self.paginate_queryset(comments)
+        serializer = self.get_paginated_response(CommentSerializer(page,many=True).data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     #댓글 생성
