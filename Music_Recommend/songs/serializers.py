@@ -3,8 +3,7 @@ from rest_framework import serializers
 from songs.models import Song, Voice, Comment
 
 class SongSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    song_likes = serializers.StringRelatedField(many=True)   
+     
     class Meta:
         model = Song
         fields = "__all__"

@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Playlist
-from .serializers import PlaylistCreateSerializer, PlaylistSerializer, PlaylistDetailSerializer
+from songs.models import Song
+from .serializers import PlaylistCreateSerializer, PlaylistSerializer, PlaylistDetailSerializer, PlaylistSerializer
 
 class PlaylistView(APIView):
     permission_classes = [IsAuthenticated]
@@ -51,3 +52,17 @@ class PlaylistDetailView(APIView):
             playlist.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
+
+#플레이리스트 노래 추가
+class PlaylistSongView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, song_id, playlist_id):
+        song = get_object_or_404(Song, id=song_id)
+        playlist_detail = get_object_or_404(Playlist, id=playlist_id).playlist_detail
+        if playlist_detail.filter(id=song.id).exists():
+            playlist_detail.remove(song.id)
+            return Response({"message":"플레이리스트에 노래 제거 "}, status=status.HTTP_201_CREATED)
+        else:
+            playlist_detail.add(song.id)
+            return Response({"message":"플레이리스트에 노래 추가 "}, status=status.HTTP_201_CREATED)
