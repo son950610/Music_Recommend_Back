@@ -10,8 +10,11 @@ from songs.serializers import SongSerializer, VoiceCreateSerializer, VoiceSerial
 
 from rest_framework.pagination import PageNumberPagination
 
+#Comment, Voice 페이지네이션
 class CommetVoicePagination(PageNumberPagination):
     page_size = 10
+    
+######Song######
 class SongView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -42,6 +45,7 @@ class SearchView(APIView, PageNumberPagination):
         post_result = Song.object.all()
     pass
 
+######Voice######
 class VoiceView(PaginationHandlerMixin, APIView):
     pagination_class = CommetVoicePagination
     permission_classes = [IsAuthenticated]
@@ -84,6 +88,7 @@ class VoiceDetailView(APIView):
             voice.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
+    
 #모창 좋아요
 class VoiceLikeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -97,6 +102,7 @@ class VoiceLikeView(APIView):
             voice.voice_likes.add(request.user)
             return Response("좋아요 함", status=status.HTTP_200_OK)
 
+######Comment######
 class CommentView(PaginationHandlerMixin, APIView):
     pagination_class = CommetVoicePagination
     permission_classes = [IsAuthenticated] 
