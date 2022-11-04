@@ -2,14 +2,11 @@ from rest_framework import serializers
 
 from songs.models import Song, Voice, Comment
 
-class SongSerializer(serializers.ModelSerializer):
-     
-    class Meta:
-        model = Song
-        fields = "__all__"
-
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    song = serializers.StringRelatedField()
+    def get_user(self, obj):
+        return obj.user.nickname
     class Meta:
         model = Comment
         fields = "__all__"
@@ -25,7 +22,7 @@ class VoiceSerializer(serializers.ModelSerializer):
     song = serializers.StringRelatedField()
     
     def get_user(self, obj): 
-        return obj.user.email
+        return obj.user.nickname
     class Meta:
         model = Voice
         fields = "__all__"
@@ -35,3 +32,10 @@ class VoiceCreateSerializer(serializers.ModelSerializer):
         model = Voice
         fields = ('recode',)
 
+class SongSerializer(serializers.ModelSerializer):
+    song_likes = serializers.StringRelatedField(many=True)
+    comments = CommentSerializer(many=True)
+    voices = VoiceSerializer(many=True)
+    class Meta:
+        model = Song
+        fields = "__all__"
