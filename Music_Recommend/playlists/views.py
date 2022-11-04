@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Playlist
+from songs.models import Song
 from .serializers import PlaylistCreateSerializer, PlaylistSerializer, PlaylistDetailSerializer
 
 class PlaylistView(APIView):
@@ -26,6 +27,17 @@ class PlaylistView(APIView):
 
 class PlaylistDetailView(APIView):
     permission_classes = [IsAuthenticated]
+    
+    #플레이리스트에 노래 여러 개 추가
+    def post(self, request, playlist_id):
+        song_list = list(request.data["id"])
+        playlist_detail = get_object_or_404(Playlist, id=playlist_id).playlist_detail
+        for i in range(len(song_list)):
+            song = Song.objects.get(id=song_list[i])
+            if playlist_detail.filter(id=song_list[i]).exists():
+                return Response({"message":f"'{song.singer}의 {song.title}'(이)가 플레이리스트에 이미 추가되어있음"}, status=status.HTTP_201_CREATED)
+            playlist_detail.add(song)
+        return Response({"message":"플레이리스트에 노래 추가 "}, status=status.HTTP_201_CREATED)
     
     #플레이리스트 상세페이지
     def get(self, request, playlist_id):
