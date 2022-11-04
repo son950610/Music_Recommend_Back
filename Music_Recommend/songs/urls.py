@@ -6,7 +6,8 @@ urlpatterns = [
     #song
     path('<int:song_id>/', views.SongView.as_view(), name='song_view'),
     path('<int:song_id>/song_like/', views.SongLikeView.as_view(), name='song_like_view'),
-    
+    path('search/',views.SearchView.as_view(),name='search_view'),
+
     #voice
     path('<int:song_id>/voice/', views.VoiceView.as_view(), name='voice_view'),
     path('<int:voice_id>/voice_like/', views.VoiceLikeView.as_view(), name='voice_like_view'),
