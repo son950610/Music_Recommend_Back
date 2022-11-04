@@ -2,6 +2,10 @@ from rest_framework import serializers
 
 from songs.models import Song, Voice, Comment
 
+class SearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = ("title","genre","singer","image")
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     song = serializers.StringRelatedField()
