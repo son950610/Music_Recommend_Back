@@ -43,7 +43,7 @@ class VoiceView(APIView):
     #모창 전체 리스트
     def get(self, request, song_id):
         song = get_object_or_404(Song, id=song_id)
-        voice = song.voice_set.all()
+        voice = song.voices.all()
         serializer = VoiceSerializer(voice, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -95,7 +95,7 @@ class CommentView(APIView):
     #댓글 전체 리스트
     def get(self, request, song_id):
         song = Song.objects.get(id=song_id)
-        comments = song.comment_set.all()
+        comments = song.comments.all()
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -103,7 +103,7 @@ class CommentView(APIView):
     def post(self, request, song_id):
         serializer = CommentCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user, article_id=song_id)
+            serializer.save(user=request.user, song_id=song_id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -116,8 +116,8 @@ class CommentDetailView(APIView):
         comment = get_object_or_404(Comment, id=comment_id)
         if request.user == comment.user:
             serializer = CommentCreateSerializer(comment, data=request.data)
-            if serializer.is_vaild():
-                serializer.save()
+            if serializer.is_valid():
+                serializer.save(user=request.user, song_id=song_id)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)

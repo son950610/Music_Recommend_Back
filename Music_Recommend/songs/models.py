@@ -32,7 +32,7 @@ class Voice(models.Model):
     voice_likes = models.ManyToManyField(User, related_name="like_voice", blank=True)
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name="voices")
     class Meta:
         db_table = 'voice'
         ordering = ['-created_at']
@@ -49,5 +49,5 @@ class Comment(models.Model):
         return str(self.content)
     
     class Meta:
-        db_table = 'user'
+        db_table = 'comment'
         ordering = ['-created_at']
