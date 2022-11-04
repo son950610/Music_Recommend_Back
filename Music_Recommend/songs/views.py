@@ -3,16 +3,22 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.db.models import Q
 
 from .pagination import PaginationHandlerMixin
 from .models import Song, Voice, Comment
-from songs.serializers import SongSerializer, VoiceCreateSerializer, VoiceSerializer, CommentSerializer, CommentCreateSerializer
+from songs.serializers import (SongSerializer, VoiceCreateSerializer, 
+VoiceSerializer, CommentSerializer, CommentCreateSerializer, SearchSerializer)
 
 from rest_framework.pagination import PageNumberPagination
 
 #Comment, Voice 페이지네이션
 class CommetVoicePagination(PageNumberPagination):
     page_size = 10
+
+#Serach 페이지네이션
+class SearchPagination(PageNumberPagination):
+    page_size = 8
     
 ######Song######
 class SongView(APIView):
@@ -38,12 +44,23 @@ class SongLikeView(APIView):
             return Response("좋아요 함.", status=status.HTTP_200_OK)
 
 #노래 검색
-class SearchView(APIView, PageNumberPagination):
-    permission_classes = [IsAuthenticated]
+class SearchView(PaginationHandlerMixin, APIView):
+    pagination_class = SearchPagination
+    permission_classes = [IsAuthenticated] 
     
     def get(self, request):
-        post_result = Song.object.all()
-    pass
+        keyword = request.GET.get('keyword')
+        if keyword =='':
+            return Response("검색 결과가 없습니다.", status=status.HTTP_200_OK)
+        post_result = Song.objects.filter(
+        Q(title__icontains=keyword) |
+        Q(singer__icontains=keyword)|
+        Q(genre__icontains=keyword)
+        )
+        page = self.paginate_queryset(post_result)
+        serializer = self.get_paginated_response(SearchSerializer(page,many=True).data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 ######Voice######
 class VoiceView(PaginationHandlerMixin, APIView):
@@ -52,7 +69,6 @@ class VoiceView(PaginationHandlerMixin, APIView):
 
     #모창 전체 리스트
     def get(self, request, song_id):
-        id = request.GET.get('id', None)
         song = get_object_or_404(Song, id=song_id)
         voice = song.voices.all()
         page = self.paginate_queryset(voice)
@@ -109,7 +125,6 @@ class CommentView(PaginationHandlerMixin, APIView):
     
     #댓글 전체 리스트
     def get(self, request, song_id):
-        id = request.GET.get('id', None)
         song = Song.objects.get(id=song_id)
         comments = song.comments.all()
         page = self.paginate_queryset(comments)
