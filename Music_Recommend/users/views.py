@@ -6,10 +6,16 @@ from rest_framework.generics import get_object_or_404
 from django.contrib.auth.hashers import check_password
 
 from .jwt_claim_serializer import CustomTokenObtainPairSerializer
-from .serializers import UserSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer, ChangePasswordSerializer, ProfileViewSerializer
 from .models import User
 
 class UserView(APIView):
+    #프로필 정보
+    def get(self, request):
+        user = get_object_or_404(User, id=request.user.id)
+        serializer = ProfileViewSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
     #회원가입
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -34,7 +40,7 @@ class UserView(APIView):
         user = get_object_or_404(User, id=request.user.id)
         if user:
             user.delete()
-            return Response({"message":"회원탈퇴 성공"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message":"회원탈퇴 성공"}, status=status.HTTP_200_OK)
         return Response({"message":"회원탈퇴 실패"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordView(APIView):
@@ -42,7 +48,7 @@ class ChangePasswordView(APIView):
     def post(self, request):
         user = get_object_or_404(User, id=request.user.id)
         password = user.password
-        if check_password(request.data["password"], password):
+        if check_password(request.data, password):
             return Response({"message":"인증이 완료되었습니다."}, status=status.HTTP_200_OK)        
         return Response({"message":"맞는 비밀번호를 적어주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -56,6 +62,7 @@ class ChangePasswordView(APIView):
                 return Response({"message":"비밀번호 변경이 완료되었습니다! 다시 로그인해주세요."} , status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
