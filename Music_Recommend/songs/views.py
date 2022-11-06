@@ -46,12 +46,13 @@ class SongLikeView(APIView):
 #노래 검색
 class SearchView(PaginationHandlerMixin, APIView):
     pagination_class = SearchPagination
-    permission_classes = [IsAuthenticated] 
+    # permission_classes = [IsAuthenticated] 
     
     def get(self, request):
         keyword = request.GET.get('keyword')
         if keyword =='':
             return Response("검색 결과가 없습니다.", status=status.HTTP_200_OK)
+        
         post_result = Song.objects.filter(
         Q(title__icontains=keyword) |
         Q(singer__icontains=keyword)|
@@ -59,6 +60,7 @@ class SearchView(PaginationHandlerMixin, APIView):
         )
         page = self.paginate_queryset(post_result)
         serializer = self.get_paginated_response(SearchSerializer(page,many=True).data)
+    
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
