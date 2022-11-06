@@ -44,7 +44,6 @@ class SongLikeView(APIView):
             return Response("좋아요 함.", status=status.HTTP_200_OK)
 
 #노래 검색
-
 # class SearchView(PaginationHandlerMixin, APIView):
 #     pagination_class = SearchPagination
 #     # permission_classes = [IsAuthenticated] 
