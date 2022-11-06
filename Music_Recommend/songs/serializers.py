@@ -48,9 +48,13 @@ class SongSerializer(serializers.ModelSerializer):
     song_likes_count = serializers.SerializerMethodField()
     comments = CommentSerializer(many=True)
     voices = VoiceSerializer(many=True)
+    comments_count = serializers.SerializerMethodField()
 
     def get_song_likes_count(self, obj) :    
         return obj.song_likes.count()
+    
+    def get_comments_count(self, obj) :    
+        return obj.comments.count()
     
     class Meta:
         model = Song
