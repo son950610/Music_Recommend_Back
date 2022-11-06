@@ -135,7 +135,9 @@ class CommentView(PaginationHandlerMixin, APIView):
 
     #댓글 생성
     def post(self, request, song_id):
+        print(request.data)
         serializer = CommentCreateSerializer(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             serializer.save(user=request.user, song_id=song_id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -161,6 +163,6 @@ class CommentDetailView(APIView):
         comment= get_object_or_404(Comment, id=comment_id)
         if request.user == comment.user:
             comment.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_200_OK)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
 
