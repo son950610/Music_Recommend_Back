@@ -23,7 +23,7 @@ class PlaylistView(APIView):
         serializer = PlaylistCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class PlaylistDetailView(APIView):
     permission_classes = [IsAuthenticated]
@@ -57,7 +57,7 @@ class PlaylistDetailView(APIView):
         elif len(exist_list) > 1:
             return Response(f"'{exist_list[0].singer}의 {exist_list[0].title}' 외 {len(exist_list)-1} 곡이 플레이리스트에 이미 추가되어있으며 {len(add_list)}곡이 추가되었음", status=status.HTTP_200_OK) 
         
-        return Response(f"플레이리스트에 노래 {len(add_list)}곡이 추가됨", status=status.HTTP_201_CREATED)
+        return Response(f"플레이리스트에 노래 {len(add_list)}곡이 추가됨", status=status.HTTP_200_OK)
 
     #플레이리스트 상세페이지
     def get(self, request, playlist_id):
@@ -81,7 +81,7 @@ class PlaylistDetailView(APIView):
         playlist = get_object_or_404(Playlist, id=playlist_id )
         if request.user == playlist.user:
             playlist.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_200_OK)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
 
 #플레이리스트 노래 추가
@@ -93,8 +93,7 @@ class PlaylistSongView(APIView):
         playlist_detail = get_object_or_404(Playlist, id=playlist_id).playlist_detail
         if playlist_detail.filter(id=song.id).exists():
             playlist_detail.remove(song.id)
-            return Response({"message":"플레이리스트에 노래 제거 "}, status=status.HTTP_201_CREATED)
+            return Response({"message":"플레이리스트에 노래 제거 "}, status=status.HTTP_200_OK)
         else:
             playlist_detail.add(song.id)
-            return Response({"message":"플레이리스트에 노래 추가 "}, status=status.HTTP_201_CREATED)
-
+            return Response({"message":"플레이리스트에 노래 추가 "}, status=status.HTTP_200_OK)
