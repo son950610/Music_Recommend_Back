@@ -38,29 +38,43 @@ class SongLikeView(APIView):
         song = get_object_or_404(Song, id=song_id)
         if request.user in song.song_likes.all():
             song.song_likes.remove(request.user)
-            return Response("좋아요 취소.", status=status.HTTP_204_NO_CONTENT)
+            return Response("좋아요 취소.", status=status.HTTP_200_OK)
         else:
             song.song_likes.add(request.user)
             return Response("좋아요 함.", status=status.HTTP_200_OK)
 
 #노래 검색
-class SearchView(PaginationHandlerMixin, APIView):
-    pagination_class = SearchPagination
-    # permission_classes = [IsAuthenticated] 
+# class SearchView(PaginationHandlerMixin, APIView):
+#     pagination_class = SearchPagination
+#     # permission_classes = [IsAuthenticated] 
     
-    def get(self, request):
-        keyword = request.GET.get('keyword')
-        if keyword =='':
-            return Response("검색 결과가 없습니다.", status=status.HTTP_200_OK)
+#     def get(self, request):
+#         keyword = request.GET.get('keyword')
+#         if keyword =='':
+#             return Response("검색 결과가 없습니다.", status=status.HTTP_200_OK)
         
-        post_result = Song.objects.filter(
-        Q(title__icontains=keyword) |
-        Q(singer__icontains=keyword)|
-        Q(genre__icontains=keyword)
-        )
-        page = self.paginate_queryset(post_result)
-        serializer = self.get_paginated_response(SearchSerializer(page,many=True).data)
+#         post_result = Song.objects.filter(
+#         Q(title__icontains=keyword) |
+#         Q(singer__icontains=keyword)|
+#         Q(genre__icontains=keyword)
+#         )
+#         page = self.paginate_queryset(post_result)
+#         serializer = self.get_paginated_response(SearchSerializer(page,many=True).data)
     
+#       return Response(serializer.data, status=status.HTTP_200_OK)
+
+class SearchView(APIView):
+# permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+    # post_result = Song.objects.all()
+        keyword = request.GET.get('keyword')
+        if keyword:
+            post_result = Song.objects.filter(
+            Q(title__icontains=keyword) |
+            Q(singer__icontains=keyword)|
+            Q(genre__icontains=keyword)
+            )
+        serializer = SearchSerializer(post_result, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -104,7 +118,7 @@ class VoiceDetailView(APIView):
         voice = get_object_or_404(Voice, id=voice_id)
         if request.user == voice.user:
             voice.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_200_OK)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
     
 #모창 좋아요
