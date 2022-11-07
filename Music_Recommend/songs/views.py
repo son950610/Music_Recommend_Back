@@ -34,7 +34,7 @@ class SongLikeView(APIView):
 
 #노래 검색
 class SearchView(APIView):
-    # permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated] 
     
     def get(self, request):
         keyword = request.GET.get('keyword')
