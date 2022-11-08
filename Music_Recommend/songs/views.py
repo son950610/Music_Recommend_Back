@@ -34,7 +34,7 @@ class SongLikeView(APIView):
 
 #노래 검색
 class SearchView(APIView):
-  permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         keyword = request.GET.get('keyword')
         if keyword:
@@ -140,6 +140,6 @@ class CommentDetailView(APIView):
         comment= get_object_or_404(Comment, id=comment_id)
         if request.user == comment.user:
             comment.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_200_OK)
         return Response("접근 권한 없음", status=status.HTTP_403_FORBIDDEN)
 
