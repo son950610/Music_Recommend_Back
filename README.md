@@ -28,9 +28,9 @@
 - 깃 컨벤션 지키기
 
 ## ****🕸 와이어 프레임****
-
-
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7e67e46d-3c97-40e5-a509-77e029fc2f8e/Untitled.png)
 ## ****🎯 데이터베이스****
+![image](https://user-images.githubusercontent.com/113076031/204445751-7b1e05f9-5b3d-4926-99e2-ebc9e49e21e0.png)
 
 
 ## ****🎨 API 설계****
